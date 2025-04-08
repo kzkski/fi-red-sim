@@ -1,0 +1,153 @@
+[
+    {
+        "id": "temperature-simulation",
+        "type": "tab",
+        "label": "温度センサーシミュレーション",
+        "disabled": false,
+        "info": "基本的な温度センサーシミュレーションとOrion Context Broker連携"
+    },
+    {
+        "id": "temperature-inject",
+        "type": "inject",
+        "z": "temperature-simulation",
+        "name": "定期実行（5秒）",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "5",
+        "crontab": "",
+        "once": true,
+        "onceDelay": "1",
+        "topic": "temperature",
+        "payload": "",
+        "payloadType": "date",
+        "x": 130,
+        "y": 80,
+        "wires": [
+            [
+                "temperature-generator"
+            ]
+        ]
+    },
+    {
+        "id": "temperature-generator",
+        "type": "function",
+        "z": "temperature-simulation",
+        "name": "温度生成",
+        "func": "// 温度生成関数\nconst baseTemp = 25; // 基準温度\nconst variation = 2; // 変動幅\nconst maxDelay = 3000; // 最大遅延時間（ミリ秒）\n\n// ノードIDからハッシュを生成してセンサーID作成\nconst hash = Math.abs(node.id.split('').reduce((a, b) => {\n    a = ((a << 5) - a) + b.charCodeAt(0);\n    return a & a;\n}, 0));\nconst sensorId = \"temp_\" + hash.toString().substring(0, 6);\n\n// ランダムな遅延を設定（0〜maxDelayミリ秒）\nconst delay = Math.floor(Math.random() * maxDelay);\n\n// 基準温度からランダムな変動を加えた温度を生成\nconst temp = baseTemp + (Math.random() * variation * 2 - variation);\nconst temperature = Math.round(temp * 10) / 10; // 小数点1桁に丸める\n\n// センサー情報を付加したメッセージを作成\nconst newMsg = {\n    payload: {\n        id: sensorId,\n        type: \"Temperature\",\n        value: temperature,\n        unit: \"°C\",\n        timestamp: new Date().toISOString()\n    }\n};\n\n// ディレイ情報をステータスに表示\nnode.status({fill:\"green\", shape:\"dot\", text:`${temperature}°C (${sensorId}) - ${delay}ms遅延` });\n\n// 遅延後にメッセージを送信\nsetTimeout(() => {\n    node.send(newMsg);\n}, delay);\n\n// 即時の出力を防止（遅延後に送信するため）\nreturn null;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 300,
+        "y": 300,
+        "wires": [
+            [
+                "temperature-debug",
+                "orion-converter"
+            ]
+        ]
+    },
+    {
+        "id": "temperature-debug",
+        "type": "debug",
+        "z": "temperature-simulation",
+        "name": "温度データ",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 530,
+        "y": 180,
+        "wires": []
+    },
+    {
+        "id": "orion-converter",
+        "type": "function",
+        "z": "temperature-simulation",
+        "name": "Orionエンティティ変換",
+        "func": "// Orion Context Broker用のエンティティ形式に変換\nconst temp = msg.payload;\n\n// 現在時刻\nconst timestamp = temp.timestamp;\n\n// SmartDataModels WeatherObservedモデルに準拠したNGSIv2フォーマットに変換\nmsg.payload = {\n    id: \"urn:ngsi-ld:WeatherObserved:\" + temp.id,\n    type: \"WeatherObserved\",\n    dateObserved: {\n        type: \"DateTime\",\n        value: timestamp\n    },\n    temperature: {\n        type: \"Number\",\n        value: temp.value\n    },\n    source: {\n        type: \"Text\",\n        value: \"https://github.com/kzkski/fi-red-sim\"\n    },\n    dataProvider: {\n        type: \"Text\",\n        value: \"FIWARE-RED-SIM\"\n    },\n    location: {\n        type: \"geo:json\",\n        value: {\n            type: \"Point\",\n            coordinates: [139.7454, 35.6586] // 東京タワー\n        }\n    }\n};\n\n// ヘッダー設定はHTTPリクエストノードで直接定義するように変更\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 570,
+        "y": 440,
+        "wires": [
+            [
+                "orion-create"
+            ]
+        ]
+    },
+    {
+        "id": "orion-create",
+        "type": "http request",
+        "z": "temperature-simulation",
+        "name": "Orion UPSERT",
+        "method": "POST",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "http://orion:1026/v2/entities?options=upsert",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "authType": "",
+        "senderr": true,
+        "headers": [
+            {
+                "keyType": "Content-Type",
+                "keyValue": "",
+                "valueType": "application/json",
+                "valueValue": ""
+            },
+            {
+                "keyType": "other",
+                "keyValue": "Fiware-Service",
+                "valueType": "other",
+                "valueValue": "openiot"
+            },
+            {
+                "keyType": "other",
+                "keyValue": "Fiware-ServicePath",
+                "valueType": "other",
+                "valueValue": "/"
+            }
+        ],
+        "x": 800,
+        "y": 440,
+        "wires": [
+            [
+                "orion-result"
+            ]
+        ]
+    },
+    {
+        "id": "orion-result",
+        "type": "debug",
+        "z": "temperature-simulation",
+        "name": "Orion結果",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 980,
+        "y": 440,
+        "wires": []
+    }
+]
