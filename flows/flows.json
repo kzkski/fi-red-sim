@@ -48,6 +48,17 @@
         "className": ""
     },
     {
+        "id": "orion-status-group",
+        "type": "ui_group",
+        "name": "Orion連携状態",
+        "tab": "ui-tab",
+        "order": 4,
+        "disp": true,
+        "width": "12",
+        "collapse": false,
+        "className": ""
+    },
+    {
         "id": "3229e81b2be3ad41",
         "type": "ui_base",
         "theme": {
@@ -210,9 +221,13 @@
         "submit": "更新",
         "cancel": "キャンセル",
         "topic": "sensor",
-        "x": 340,
-        "y": 100,
-        "wires": [["config-function"]]
+        "x": 160,
+        "y": 420,
+        "wires": [
+            [
+                "config-function"
+            ]
+        ]
     },
     {
         "id": "config-function",
@@ -225,9 +240,16 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 520,
-        "y": 100,
-        "wires": [["config-form"], ["temp-sim-inject"]]
+        "x": 60,
+        "y": 180,
+        "wires": [
+            [
+                "config-form"
+            ],
+            [
+                "temp-sim-inject"
+            ]
+        ]
     },
     {
         "id": "anomaly-form",
@@ -245,13 +267,34 @@
                 "value": "anomalyType",
                 "type": "select",
                 "options": [
-                    {"label": "なし", "value": "none"},
-                    {"label": "スパイク", "value": "spike"},
-                    {"label": "センサー故障", "value": "failure"},
-                    {"label": "通信エラー", "value": "communication"},
-                    {"label": "トレンド変化", "value": "trend"},
-                    {"label": "周期的な異常", "value": "periodic"},
-                    {"label": "ノイズ増加", "value": "noise"}
+                    {
+                        "label": "なし",
+                        "value": "none"
+                    },
+                    {
+                        "label": "スパイク",
+                        "value": "spike"
+                    },
+                    {
+                        "label": "センサー故障",
+                        "value": "failure"
+                    },
+                    {
+                        "label": "通信エラー",
+                        "value": "communication"
+                    },
+                    {
+                        "label": "トレンド変化",
+                        "value": "trend"
+                    },
+                    {
+                        "label": "周期的な異常",
+                        "value": "periodic"
+                    },
+                    {
+                        "label": "ノイズ増加",
+                        "value": "noise"
+                    }
                 ],
                 "required": true
             },
@@ -276,8 +319,14 @@
                 "value": "trendDirection",
                 "type": "select",
                 "options": [
-                    {"label": "上昇", "value": "up"},
-                    {"label": "下降", "value": "down"}
+                    {
+                        "label": "上昇",
+                        "value": "up"
+                    },
+                    {
+                        "label": "下降",
+                        "value": "down"
+                    }
                 ],
                 "required": true
             },
@@ -286,7 +335,7 @@
                 "value": "trendRate",
                 "type": "number",
                 "min": 0.1,
-                "max": 5.0,
+                "max": 5,
                 "required": true
             },
             {
@@ -319,9 +368,13 @@
         "submit": "更新",
         "cancel": "キャンセル",
         "topic": "anomaly",
-        "x": 340,
-        "y": 150,
-        "wires": [["anomaly-function"]]
+        "x": 440,
+        "y": 120,
+        "wires": [
+            [
+                "anomaly-function"
+            ]
+        ]
     },
     {
         "id": "anomaly-function",
@@ -334,9 +387,16 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 520,
-        "y": 150,
-        "wires": [["anomaly-form"], ["temp-sim-inject"]]
+        "x": 80,
+        "y": 320,
+        "wires": [
+            [
+                "anomaly-form"
+            ],
+            [
+                "temp-sim-inject"
+            ]
+        ]
     },
     {
         "id": "status-text",
@@ -351,8 +411,8 @@
         "format": "{{msg.payload}}",
         "layout": "row-spread",
         "className": "",
-        "x": 780,
-        "y": 250,
+        "x": 790,
+        "y": 360,
         "wires": []
     },
     {
@@ -367,8 +427,8 @@
         "initialize": "// 初期設定\nlet config = {\n    sensorId: 'urn:ngsi-ld:TemperatureSensor:001',\n    latitude: 35.6812,\n    longitude: 139.7671,\n    description: 'Temperature Sensor 001',\n    baseTemp: 20,\n    variation: 0.5,\n    interval: 1,\n    anomalyType: 'none',\n    anomalyProbability: 10,\n    anomalyIntensity: 3\n};\nglobal.set('sensorConfig', config);",
         "finalize": "",
         "libs": [],
-        "x": 340,
-        "y": 100,
+        "x": 450,
+        "y": 40,
         "wires": [
             [
                 "update-injection"
@@ -394,8 +454,8 @@
         "from": "",
         "to": "",
         "reg": false,
-        "x": 570,
-        "y": 100,
+        "x": 690,
+        "y": 80,
         "wires": [
             [
                 "temp-sim-inject"
@@ -419,17 +479,20 @@
         "topic": "",
         "payload": "",
         "payloadType": "date",
-        "x": 160,
-        "y": 200,
-        "wires": [["temp-sim-function"]],
-        "initialize": "// グローバル変数の初期化\nlet config = {\n    sensorId: 'sensor-001',\n    latitude: 35.6812,\n    longitude: 139.7671,\n    description: '温度センサー001',\n    baseTemp: 25,\n    variation: 2,\n    interval: 5,\n    anomalyType: 'none',\n    anomalyProbability: 0,\n    anomalyIntensity: 1,\n    trendDirection: 'up',\n    trendRate: 1,\n    period: 60,\n    duration: 10\n};\nglobal.set('sensorConfig', config);"
+        "x": 180,
+        "y": 500,
+        "wires": [
+            [
+                "temp-sim-function"
+            ]
+        ]
     },
     {
         "id": "temp-sim-function",
         "type": "function",
         "z": "temperature-simulation",
         "name": "温度データ生成",
-        "func": "// グローバル変数の初期化\nif (!context.get('startTime')) {\n    context.set('startTime', Date.now());\n    context.set('lastTemp', null);\n    context.set('anomalyStartTime', null);\n    context.set('baselineTemp', null);\n}\n\n// 設定を取得\nconst config = global.get('sensorConfig');\nconst now = Date.now();\n\n// 基本温度の生成\nlet temp = config.baseTemp + (Math.random() * 2 - 1) * config.variation;\nlet status = '正常';\n\n// 異常値の生成\nif (config.anomalyType !== 'none') {\n    let probability = config.anomalyProbability / 100;\n    \n    // 周期的な異常の場合、時間に基づいて確率を調整\n    if (config.anomalyType === 'periodic') {\n        const elapsed = (now % (config.period * 1000)) / 1000;\n        if (elapsed < config.duration) {\n            probability = 1;\n        } else {\n            probability = 0;\n        }\n    }\n    \n    if (Math.random() < probability) {\n        switch (config.anomalyType) {\n            case 'spike':\n                // スパイク異常: 基準値から大きく外れた値\n                const direction = Math.random() < 0.5 ? 1 : -1;\n                temp += direction * (5 + config.anomalyIntensity * 2);\n                status = 'スパイク異常';\n                break;\n                \n            case 'failure':\n                // センサー故障: ノイズの多い値または一定値\n                if (Math.random() < 0.5) {\n                    // 一定値\n                    temp = config.baseTemp;\n                    status = 'センサー故障（固定値）';\n                } else {\n                    // 大きなノイズ\n                    temp = config.baseTemp + (Math.random() * 20 - 10) * config.anomalyIntensity;\n                    status = 'センサー故障（ノイズ）';\n                }\n                break;\n                \n            case 'communication':\n                // 通信エラー: nullまたは不正な値\n                if (Math.random() < 0.5) {\n                    temp = null;\n                    status = '通信エラー（データなし）';\n                } else {\n                    temp = NaN;\n                    status = '通信エラー（不正値）';\n                }\n                break;\n                \n            case 'trend':\n                // トレンド変化: 徐々に上昇または下降\n                if (!context.get('anomalyStartTime')) {\n                    context.set('anomalyStartTime', now);\n                    context.set('baselineTemp', temp);\n                }\n                \n                const minutesElapsed = (now - context.get('anomalyStartTime')) / (60 * 1000);\n                const change = config.trendRate * minutesElapsed;\n                temp = context.get('baselineTemp') + (config.trendDirection === 'up' ? change : -change);\n                status = 'トレンド変化（' + (config.trendDirection === 'up' ? '上昇' : '下降') + '）';\n                break;\n                \n            case 'periodic':\n                // 周期的な異常: 一定間隔で発生\n                const anomalyMagnitude = 5 + config.anomalyIntensity * 2;\n                temp += anomalyMagnitude;\n                status = '周期的な異常';\n                break;\n                \n            case 'noise':\n                // ノイズ増加: 標準偏差の増加\n                const noiseLevel = config.variation * (1 + config.anomalyIntensity);\n                temp = config.baseTemp + (Math.random() * 2 - 1) * noiseLevel;\n                status = 'ノイズ増加';\n                break;\n        }\n    } else if (config.anomalyType === 'trend' && context.get('anomalyStartTime')) {\n        // トレンド変化の継続\n        const minutesElapsed = (now - context.get('anomalyStartTime')) / (60 * 1000);\n        const change = config.trendRate * minutesElapsed;\n        temp = context.get('baselineTemp') + (config.trendDirection === 'up' ? change : -change);\n        status = 'トレンド変化（' + (config.trendDirection === 'up' ? '上昇' : '下降') + '）';\n    }\n}\n\n// 前回の値を保存\ncontext.set('lastTemp', temp);\n\n// ゲージとグラフ用のメッセージ\nconst sensorMsg = {\n    payload: {\n        temperature: temp,\n        timestamp: now\n    }\n};\n\n// ステータス表示用のメッセージ\nconst statusMsg = { payload: status };\n\n// Smart Data Models用のメッセージ\nconst ngsiMsg = {\n    payload: {\n        \"id\": config.sensorId,\n        \"type\": \"TemperatureSensor\",\n        \"dateObserved\": new Date(now).toISOString(),\n        \"temperature\": temp,\n        \"unit\": \"CEL\",\n        \"accuracy\": 0.1,\n        \"description\": config.description,\n        \"location\": {\n            \"type\": \"Point\",\n            \"coordinates\": [config.longitude, config.latitude]\n        },\n        \"status\": status\n    }\n};\n\nnode.send([sensorMsg, statusMsg, ngsiMsg]);\n\nreturn [sensorMsg, statusMsg, ngsiMsg];",
+        "func": "// グローバル変数の初期化\nif (!context.get('startTime')) {\n    context.set('startTime', Date.now());\n    context.set('lastTemp', null);\n    context.set('anomalyStartTime', null);\n    context.set('baselineTemp', null);\n}\n\n// 設定を取得\nconst config = global.get('sensorConfig');\nconst now = Date.now();\n\n// 基本温度の生成\nlet temp = config.baseTemp + (Math.random() * 2 - 1) * config.variation;\nlet status = '正常';\n\n// 異常値の生成\nif (config.anomalyType !== 'none') {\n    let probability = config.anomalyProbability / 100;\n    \n    // 周期的な異常の場合、時間に基づいて確率を調整\n    if (config.anomalyType === 'periodic') {\n        const elapsed = (now % (config.period * 1000)) / 1000;\n        if (elapsed < config.duration) {\n            probability = 1;\n        } else {\n            probability = 0;\n        }\n    }\n    \n    if (Math.random() < probability) {\n        switch (config.anomalyType) {\n            case 'spike':\n                // スパイク異常: 基準値から大きく外れた値\n                const direction = Math.random() < 0.5 ? 1 : -1;\n                temp += direction * (5 + config.anomalyIntensity * 2);\n                status = 'スパイク異常';\n                break;\n                \n            case 'failure':\n                // センサー故障: ノイズの多い値または一定値\n                if (Math.random() < 0.5) {\n                    // 一定値\n                    temp = config.baseTemp;\n                    status = 'センサー故障（固定値）';\n                } else {\n                    // 大きなノイズ\n                    temp = config.baseTemp + (Math.random() * 20 - 10) * config.anomalyIntensity;\n                    status = 'センサー故障（ノイズ）';\n                }\n                break;\n                \n            case 'communication':\n                // 通信エラー: nullまたは不正な値\n                if (Math.random() < 0.5) {\n                    temp = null;\n                    status = '通信エラー（データなし）';\n                } else {\n                    temp = NaN;\n                    status = '通信エラー（不正値）';\n                }\n                break;\n                \n            case 'trend':\n                // トレンド変化: 徐々に上昇または下降\n                if (!context.get('anomalyStartTime')) {\n                    context.set('anomalyStartTime', now);\n                    context.set('baselineTemp', temp);\n                }\n                \n                const minutesElapsed = (now - context.get('anomalyStartTime')) / (60 * 1000);\n                const change = config.trendRate * minutesElapsed;\n                temp = context.get('baselineTemp') + (config.trendDirection === 'up' ? change : -change);\n                status = 'トレンド変化（' + (config.trendDirection === 'up' ? '上昇' : '下降') + '）';\n                break;\n                \n            case 'periodic':\n                // 周期的な異常: 一定間隔で発生\n                const anomalyMagnitude = 5 + config.anomalyIntensity * 2;\n                temp += anomalyMagnitude;\n                status = '周期的な異常';\n                break;\n                \n            case 'noise':\n                // ノイズ増加: 標準偏差の増加\n                const noiseLevel = config.variation * (1 + config.anomalyIntensity);\n                temp = config.baseTemp + (Math.random() * 2 - 1) * noiseLevel;\n                status = 'ノイズ増加';\n                break;\n        }\n    } else if (config.anomalyType === 'trend' && context.get('anomalyStartTime')) {\n        // トレンド変化の継続\n        const minutesElapsed = (now - context.get('anomalyStartTime')) / (60 * 1000);\n        const change = config.trendRate * minutesElapsed;\n        temp = context.get('baselineTemp') + (config.trendDirection === 'up' ? change : -change);\n        status = 'トレンド変化（' + (config.trendDirection === 'up' ? '上昇' : '下降') + '）';\n    }\n}\n\n// 前回の値を保存\ncontext.set('lastTemp', temp);\n\n// ゲージとグラフ用のメッセージ\nconst sensorMsg = {\n    payload: {\n        temperature: temp,\n        timestamp: now\n    }\n};\n\n// ステータス表示用のメッセージ\nconst statusMsg = { payload: status };\n\n// Smart Data Models用のメッセージ（属性更新用フォーマット）\nconst ngsiMsg = {\n    payload: {\n        \"dateObserved\": {\n            \"type\": \"DateTime\",\n            \"value\": new Date(now).toISOString()\n        },\n        \"temperature\": {\n            \"type\": \"Number\",\n            \"value\": temp\n        },\n        \"status\": {\n            \"type\": \"Text\",\n            \"value\": status\n        }\n    }\n};\n\nnode.send([sensorMsg, statusMsg, ngsiMsg]);\nreturn [sensorMsg, statusMsg, ngsiMsg];",
         "outputs": 3,
         "timeout": 0,
         "noerr": 0,
@@ -437,7 +500,7 @@
         "finalize": "",
         "libs": [],
         "x": 340,
-        "y": 200,
+        "y": 580,
         "wires": [
             [
                 "temp-sim-gauge",
@@ -447,7 +510,8 @@
                 "status-text"
             ],
             [
-                "temp-sim-debug"
+                "temp-sim-debug",
+                "orion-update-url"
             ]
         ]
     },
@@ -465,7 +529,7 @@
         "statusVal": "",
         "statusType": "auto",
         "x": 600,
-        "y": 160,
+        "y": 860,
         "wires": []
     },
     {
@@ -483,13 +547,17 @@
         "format": "{{msg.payload.temperature | number:1}}",
         "min": 0,
         "max": "40",
-        "colors": ["#00b500","#e6e600","#ca3838"],
+        "colors": [
+            "#00b500",
+            "#e6e600",
+            "#ca3838"
+        ],
         "seg1": "15",
         "seg2": "30",
         "diff": false,
         "className": "",
-        "x": 780,
-        "y": 150,
+        "x": 790,
+        "y": 280,
         "wires": []
     },
     {
@@ -516,13 +584,220 @@
         "cutout": 0,
         "useOneColor": false,
         "useUTC": false,
-        "colors": ["#1f77b4"],
+        "colors": [
+            "#1f77b4"
+        ],
         "outputs": 1,
         "useDifferentColor": false,
         "className": "",
-        "datatype": "json",
-        "x": 780,
-        "y": 200,
-        "wires": [[]]
+        "x": 790,
+        "y": 300,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "orion-format",
+        "type": "function",
+        "z": "temperature-simulation",
+        "name": "Orion更新結果整形",
+        "func": "// レスポンスステータスに基づいて状態を設定\nlet status = msg.statusCode === 204 ? '成功' : 'エラー';\n\n// 更新時刻を取得\nconst timestamp = new Date().toLocaleString('ja-JP');\n\n// UIに表示するメッセージを作成\nreturn {\n    payload: `更新時刻: ${timestamp}\\n状態: ${status}`\n};",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 690,
+        "y": 640,
+        "wires": [
+            [
+                "orion-status-text",
+                "orion-debug"
+            ]
+        ]
+    },
+    {
+        "id": "orion-update-url",
+        "type": "function",
+        "z": "temperature-simulation",
+        "name": "URL構築",
+        "func": "const config = global.get('sensorConfig');\n\nif (!config || !config.sensorId) {\n    node.error('センサーIDが設定されていません');\n    return null;\n}\n\n// URLを構築\nconst url = `http://orion:1026/v2/entities/${config.sensorId}/attrs`;\n\n// 送信データを保持\nconst sentData = msg.payload;\n\n// 元のメッセージを保持しつつ、URLを追加\nreturn { \n    ...msg,\n    url: url,\n    originalPayload: sentData\n};\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 480,
+        "y": 580,
+        "wires": [["orion-update"]]
+    },
+    {
+        "id": "orion-update",
+        "type": "http request",
+        "z": "temperature-simulation",
+        "name": "Orion更新",
+        "method": "PATCH",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [
+            {
+                "keyType": "Content-Type",
+                "keyValue": "application/json",
+                "valueType": "other",
+                "valueValue": ""
+            }
+        ],
+        "x": 600,
+        "y": 580,
+        "wires": [["orion-format"]]
+    },
+    {
+        "id": "orion-debug",
+        "type": "debug",
+        "z": "temperature-simulation",
+        "name": "Orion更新結果",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 790,
+        "y": 580,
+        "wires": []
+    },
+    {
+        "id": "orion-status-text",
+        "type": "ui_text",
+        "z": "temperature-simulation",
+        "group": "orion-status-group",
+        "order": 1,
+        "width": "12",
+        "height": "3",
+        "name": "Orion更新状態",
+        "label": "Orion更新状態",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "className": "",
+        "x": 790,
+        "y": 640,
+        "wires": []
+    },
+    {
+        "id": "orion-create",
+        "type": "http request",
+        "z": "temperature-simulation",
+        "name": "エンティティ作成",
+        "method": "POST",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "http://orion:1026/v2/entities",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [
+            {
+                "keyType": "Content-Type",
+                "keyValue": "application/json",
+                "valueType": "other",
+                "valueValue": ""
+            }
+        ],
+        "x": 520,
+        "y": 600,
+        "wires": [["orion-create-check"]]
+    },
+    {
+        "id": "orion-create-function",
+        "type": "function",
+        "z": "temperature-simulation",
+        "name": "エンティティ作成データ",
+        "func": "const config = global.get('sensorConfig');\n\n// 設定のバリデーション\nif (!config) {\n    node.error('センサー設定が存在しません');\n    return null;\n}\n\nif (!config.sensorId) {\n    node.error('センサーIDが設定されていません');\n    return null;\n}\n\n// デバッグ出力\nnode.warn('エンティティ作成データ生成: ' + JSON.stringify(config));\n\nreturn {\n    payload: {\n        \"id\": config.sensorId,\n        \"type\": \"TemperatureSensor\",\n        \"dateObserved\": {\n            \"type\": \"DateTime\",\n            \"value\": new Date().toISOString()\n        },\n        \"temperature\": {\n            \"type\": \"Number\",\n            \"value\": config.baseTemp\n        },\n        \"unit\": {\n            \"type\": \"Text\",\n            \"value\": \"CEL\"\n        },\n        \"accuracy\": {\n            \"type\": \"Number\",\n            \"value\": 0.1\n        },\n        \"description\": {\n            \"type\": \"Text\",\n            \"value\": config.description\n        },\n        \"location\": {\n            \"type\": \"geo:json\",\n            \"value\": {\n                \"type\": \"Point\",\n                \"coordinates\": [config.longitude, config.latitude]\n            }\n        },\n        \"status\": {\n            \"type\": \"Text\",\n            \"value\": \"正常\"\n        }\n    }\n};",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 320,
+        "y": 600,
+        "wires": [["orion-create"]]
+    },
+    {
+        "id": "orion-create-inject",
+        "type": "inject",
+        "z": "temperature-simulation",
+        "name": "初期化トリガー",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": true,
+        "onceDelay": "1",
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 120,
+        "y": 20,
+        "wires": [
+            [
+                "init-config"
+            ]
+        ]
+    },
+    {
+        "id": "init-config",
+        "type": "function",
+        "z": "temperature-simulation",
+        "name": "初期設定",
+        "func": "// 初期設定\nlet config = {\n    sensorId: 'sensor-001',\n    latitude: 35.6812,\n    longitude: 139.7671,\n    description: '温度センサー001',\n    baseTemp: 25,\n    variation: 2,\n    interval: 5,\n    anomalyType: 'none',\n    anomalyProbability: 0,\n    anomalyIntensity: 1,\n    trendDirection: 'up',\n    trendRate: 1,\n    period: 60,\n    duration: 10\n};\n\n// グローバル変数に保存\nglobal.set('sensorConfig', config);\n\n// デバッグ出力\nnode.warn('初期設定完了: ' + JSON.stringify(config));\n\n// 次のノードへconfig情報を渡す\nmsg.config = config;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 120,
+        "y": 60,
+        "wires": [
+            [
+                "orion-create-function"
+            ]
+        ]
+    },
+    {
+        "id": "orion-create-check",
+        "type": "function",
+        "z": "temperature-simulation",
+        "name": "作成結果確認",
+        "func": "// エンティティ作成の結果を確認\nif (msg.statusCode === 201) {\n    node.status({fill:\"green\", shape:\"dot\", text:\"作成成功\"});\n    // 成功メッセージを表示\n    const successMsg = {\n        payload: `エンティティ作成成功: ${msg.statusCode}\\nID: ${msg.req.payload.id}`\n    };\n    // データ生成を開始\n    return [msg, successMsg];\n} else if (msg.statusCode === 422) {\n    // エンティティが既に存在する場合\n    node.status({fill:\"yellow\", shape:\"ring\", text:\"既に存在\"});\n    // 警告メッセージを表示\n    const warningMsg = {\n        payload: `エンティティは既に存在します: ${msg.statusCode}\\nID: ${msg.req.payload.id}`\n    };\n    // データ生成を開始\n    return [msg, warningMsg];\n} else {\n    node.status({fill:\"red\", shape:\"ring\", text:\"エラー: \" + msg.statusCode});\n    node.error('エンティティ作成エラー: ' + JSON.stringify(msg.payload));\n    // エラーメッセージを表示\n    return [null, {\n        payload: `エンティティ作成エラー: ${msg.statusCode}\\n${JSON.stringify(msg.payload, null, 2)}`\n    }];\n}",
+        "outputs": 2,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 720,
+        "y": 600,
+        "wires": [
+            [
+                "temp-sim-inject"
+            ],
+            [
+                "orion-status-text"
+            ]
+        ]
     }
 ]
