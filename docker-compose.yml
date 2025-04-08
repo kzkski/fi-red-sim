@@ -4,15 +4,12 @@ version: '3'
 services:
   node-red:
     build:
-      context: ./docker/node-red
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: docker/node-red/Dockerfile
     ports:
       - "1880:1880"
     environment:
       - TZ=Asia/Tokyo
-    volumes:
-      - ./flows:/data
-      - ./config/node-red:/data/config
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:1880"]

@@ -4,14 +4,15 @@ FIWAREデバイスシミュレータ（Node-REDベース）
 
 ## 概要
 
-このプロジェクトは、FIWAREエコシステムのためのデバイスシミュレータです。Node-REDを使用して、様々なIoTデバイスの動作をシミュレートし、FIWARE Orion Context Brokerと連携します。
+このプロジェクトは、FIWAREエコシステムのためのデバイスシミュレータです。
+Node-REDを使用して、様々なIoTデバイスの動作をシミュレートし、FIWARE Orion Context Brokerと連携します。
 
 ## 主な機能
 
-- 複数のIoTデバイスのシミュレーション
-- リアルタイムデータ生成
+- 複数のIoTデバイスのシミュレーション（温度センサー、気象センサー）
+- リアルタイムデータ生成（ロジックは適当だけど）
 - FIWAREエンティティの自動作成と更新
-- 視覚的なフロー制御とモニタリング
+- NGSIv2形式でのデータモデリング（SmartDataModels準拠のつもり）
 
 ## 必要条件
 
@@ -22,41 +23,59 @@ FIWAREデバイスシミュレータ（Node-REDベース）
 
 1. リポジトリのクローン：
    ```bash
-   git clone [repository-url]
+   git clone https://github.com/kzkski/fi-red-sim.git
    cd fi-red-sim
    ```
 
 2. 環境の起動：
    ```bash
-   cd docker
+   npm start
+   # または
    docker-compose up -d
    ```
 
 3. アクセス：
    - Node-RED: http://localhost:1880
-   - Orion Context Broker: http://localhost:1026
-   
-   Node-REDの初期認証情報：
-   - ユーザー名: admin
-   - パスワード: password
+   - Orion Context Broker: http://localhost:1026/version
 
 ## 使用方法
 
 1. Node-REDインターフェースにアクセス
-2. 提供されているサンプルフローをインポート
+2. ライブラリから提供されているフローをインポート
+   - 温度センサーシミュレーション
+   - 気象センサーシミュレーション
 3. 必要に応じてフローをカスタマイズ
 4. デプロイしてシミュレーションを開始
+
+## データの取得
+
+Orion Context Brokerからデータを取得：
+
+```bash
+# すべてのエンティティ一覧
+curl -X GET http://localhost:1026/v2/entities \
+     -H "Fiware-Service: openiot" \
+     -H "Fiware-ServicePath: /"
+
+# 特定タイプのエンティティ取得
+curl -X GET 'http://localhost:1026/v2/entities?type=WeatherObserved' \
+     -H "Fiware-Service: openiot" \
+     -H "Fiware-ServicePath: /"
+```
 
 ## ディレクトリ構造
 
 ```
 fi-red-sim/
 ├── docker/
-│   └── docker-compose.yml
+│   └── node-red/
+│       └── Dockerfile       # Node-RED用Dockerイメージ定義
 ├── flows/
-│   └── flows.json
-└── config/
-    └── settings.js
+│   ├── temperature.json     # 温度センサーシミュレーションフロー
+│   └── weather.json         # 気象センサーシミュレーションフロー
+├── docker-compose.yml       # Docker Compose定義
+├── package.json             # プロジェクト情報・コマンド
+└── README.md                # このファイル
 ```
 
 ## ライセンス

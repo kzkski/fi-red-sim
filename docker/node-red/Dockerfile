@@ -11,8 +11,15 @@ RUN npm install \
 # 作業ディレクトリの設定
 WORKDIR /usr/src/node-red
 
+# 必要なディレクトリを作成
+RUN mkdir -p /data/lib/flows
+
+# フローファイルをlib下にコピー
+COPY ./flows/temperature.json /data/lib/flows/
+COPY ./flows/weather.json /data/lib/flows/
+
 # Node-REDの設定
-ENV NODE_RED_ENABLE_PROJECTS=true \
+ENV NODE_RED_ENABLE_PROJECTS=false \
     NODE_RED_ENABLE_SAFE_MODE=false \
     NODE_RED_FLOW_FILE=flows.json \
     FLOWS=flows.json \

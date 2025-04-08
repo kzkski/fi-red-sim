@@ -2,26 +2,6 @@
 node_modules/
 package-lock.json
 
-# Node-RED specific
-.config*.json
-.config*.json.backup
-.flows*.json.backup
-.flows_cred.json.backup
-flows_cred.json
-.sessions.json
-.npm/
-flows.json
-flows/.npm/
-
-# Environment variables
-.env
-.env.*
-!.env.example
-
-# Docker
-docker-compose.override.yml
-docker/data/
-
 # IDE and Editor
 .idea/
 .vscode/
@@ -33,10 +13,8 @@ docker/data/
 .DS_Store
 Thumbs.db
 
-# Logs and debugging
-logs/
-*.log
-npm-debug.log*
+# Docker
+docker-compose.override.yml
 
-# Test and coverage
-coverage/
+# Logs
+*.log
