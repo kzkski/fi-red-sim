@@ -1,0 +1,70 @@
+{
+    "id": "fiware-base-flow",
+    "label": "FIWARE Base Integration",
+    "nodes": [
+        {
+            "id": "temperature-entity-creator",
+            "type": "function",
+            "name": "Create Temperature Entity",
+            "func": "msg.payload = {\n    id: 'urn:ngsi-ld:TemperatureSensor:001',\n    type: 'TemperatureSensor',\n    temperature: {\n        type: 'Number',\n        value: 25.0,\n        metadata: {\n            timestamp: {\n                type: 'DateTime',\n                value: new Date().toISOString()\n            }\n        }\n    },\n    status: {\n        type: 'Text',\n        value: 'active'\n    }\n};\nreturn msg;",
+            "outputs": 1,
+            "noerr": 0,
+            "initialize": "",
+            "finalize": "",
+            "libs": [],
+            "x": 340,
+            "y": 120,
+            "wires": [["orion-entity-creator"]]
+        },
+        {
+            "id": "orion-entity-creator",
+            "type": "fiware-orion",
+            "name": "Create Entity in Orion",
+            "broker": "http://orion:1026",
+            "service": "openiot",
+            "servicepath": "/",
+            "mode": "create",
+            "x": 560,
+            "y": 120,
+            "wires": [["status-check"]]
+        },
+        {
+            "id": "status-check",
+            "type": "function",
+            "name": "Check Response Status",
+            "func": "if (msg.statusCode === 201) {\n    node.status({fill:\"green\",shape:\"dot\",text:\"Created\"});\n} else {\n    node.status({fill:\"red\",shape:\"ring\",text:\"Error: \" + msg.statusCode});\n}\nreturn msg;",
+            "outputs": 1,
+            "noerr": 0,
+            "initialize": "",
+            "finalize": "",
+            "libs": [],
+            "x": 780,
+            "y": 120,
+            "wires": [[]]
+        },
+        {
+            "id": "init-trigger",
+            "type": "inject",
+            "name": "Initialize Entity",
+            "props": [
+                {
+                    "p": "payload"
+                },
+                {
+                    "p": "topic",
+                    "vt": "str"
+                }
+            ],
+            "repeat": "",
+            "crontab": "",
+            "once": false,
+            "onceDelay": 0.1,
+            "topic": "",
+            "payload": "",
+            "payloadType": "date",
+            "x": 140,
+            "y": 120,
+            "wires": [["temperature-entity-creator"]]
+        }
+    ]
+} 

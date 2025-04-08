@@ -1,0 +1,71 @@
+[
+    {
+        "id": "fiware-integration",
+        "type": "tab",
+        "label": "FIWARE連携",
+        "disabled": false,
+        "info": "Orionとの連携フロー"
+    },
+    {
+        "id": "temp-data-input",
+        "type": "link in",
+        "z": "fiware-integration",
+        "name": "温度データ入力",
+        "links": ["temp-sim-function"],
+        "x": 120,
+        "y": 100,
+        "wires": [["anomaly-detection"]]
+    },
+    {
+        "id": "anomaly-detection",
+        "type": "function",
+        "z": "fiware-integration",
+        "name": "異常検知",
+        "func": "// 異常検知とステータス更新用の関数\nconst detectAnomaly = (temp, config) => {\n    if (temp === null || isNaN(temp)) {\n        return {\n            status: \"error\",\n            description: \"センサーエラー\"\n        };\n    }\n\n    // 温度の閾値チェック\n    if (temp > config.baseTemp + 10) {\n        return {\n            status: \"warning\",\n            description: \"高温異常\"\n        };\n    }\n    if (temp < config.baseTemp - 10) {\n        return {\n            status: \"warning\",\n            description: \"低温異常\"\n        };\n    }\n\n    return {\n        status: \"active\",\n        description: \"正常\"\n    };\n};\n\n// 設定を取得\nconst config = global.get('sensorConfig');\n\n// 異常検知を実行\nconst anomalyResult = detectAnomaly(msg.payload.temperature, config);\n\n// Orion用のメッセージを作成\nmsg.url = 'http://orion:1026/v2/entities/urn:ngsi-ld:TemperatureSensor:001/attrs';\nmsg.method = 'PATCH';\nmsg.headers = {\n    'Content-Type': 'application/json'\n};\nmsg.payload = {\n    temperature: {\n        value: msg.payload.temperature,\n        type: 'Number',\n        metadata: {\n            timestamp: {\n                type: 'DateTime',\n                value: new Date().toISOString()\n            }\n        }\n    },\n    status: {\n        value: anomalyResult.status,\n        type: 'Text'\n    },\n    description: {\n        value: anomalyResult.description,\n        type: 'Text'\n    }\n};\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 300,
+        "y": 100,
+        "wires": [["orion-update"]]
+    },
+    {
+        "id": "orion-update",
+        "type": "http request",
+        "z": "fiware-integration",
+        "name": "Orion更新",
+        "method": "use",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": {},
+        "x": 480,
+        "y": 100,
+        "wires": [["orion-debug"]]
+    },
+    {
+        "id": "orion-debug",
+        "type": "debug",
+        "z": "fiware-integration",
+        "name": "Orion更新結果",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 660,
+        "y": 100,
+        "wires": []
+    }
+] 
