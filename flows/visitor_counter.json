@@ -1,0 +1,153 @@
+[
+    {
+        "id": "visitor-counter-simulation",
+        "type": "tab",
+        "label": "ビジターカウンターシミュレーション",
+        "disabled": false,
+        "info": "ビジターカウンターシミュレーションとOrion Context Broker連携"
+    },
+    {
+        "id": "visitor-counter-inject",
+        "type": "inject",
+        "z": "visitor-counter-simulation",
+        "name": "定期実行（30秒）",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "30",
+        "crontab": "",
+        "once": true,
+        "onceDelay": "1",
+        "topic": "visitorCounter",
+        "payload": "",
+        "payloadType": "date",
+        "x": 130,
+        "y": 80,
+        "wires": [
+            [
+                "visitor-counter-generator"
+            ]
+        ]
+    },
+    {
+        "id": "visitor-counter-generator",
+        "type": "function",
+        "z": "visitor-counter-simulation",
+        "name": "ビジターカウンター生成",
+        "func": "// ビジターカウンター生成関数\nconst maxVisitors = 30; // 最大訪問者数\nconst maxDelay = 2000; // 最大遅延時間（ミリ秒）\n\n// ノードIDからハッシュを生成してセンサーID作成\nconst hash = Math.abs(node.id.split('').reduce((a, b) => {\n    a = ((a << 5) - a) + b.charCodeAt(0);\n    return a & a;\n}, 0));\nconst sensorId = \"visitor_\" + hash.toString().substring(0, 6);\n\n// ランダムな遅延を設定（0〜maxDelayミリ秒）\nconst delay = Math.floor(Math.random() * maxDelay);\n\n// 現在時刻を取得\nconst endTime = new Date();\n// 単位時間（30秒前）の開始時刻\nconst startTime = new Date(endTime.getTime() - 30000);\n\n// ランダムなin/out人数を生成\nconst inCount = Math.floor(Math.random() * maxVisitors);\nconst outCount = Math.floor(Math.random() * maxVisitors);\nconst totalCount = inCount + outCount;\nconst turnbackCount = Math.floor(Math.random() * 5); // 0-4の範囲でランダムな引き返し人数\n\n// センサー情報を付加したメッセージを作成\nconst newMsg = {\n    payload: {\n        id: sensorId,\n        type: \"VisitorCounter\",\n        in: inCount,\n        out: outCount,\n        total: totalCount,\n        startTime: startTime.toISOString(),\n        endTime: endTime.toISOString(),\n        turnback: turnbackCount\n    }\n};\n\n// ディレイ情報とカウント情報をステータスに表示\nnode.status({fill:\"green\", shape:\"dot\", text:`入:${inCount} 出:${outCount} 合計:${totalCount} - ${delay}ms遅延` });\n\n// 遅延後にメッセージを送信\nsetTimeout(() => {\n    node.send(newMsg);\n}, delay);\n\n// 即時の出力を防止（遅延後に送信するため）\nreturn null;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 300,
+        "y": 300,
+        "wires": [
+            [
+                "visitor-counter-debug",
+                "visitor-orion-converter"
+            ]
+        ]
+    },
+    {
+        "id": "visitor-counter-debug",
+        "type": "debug",
+        "z": "visitor-counter-simulation",
+        "name": "ビジターカウントデータ",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 530,
+        "y": 180,
+        "wires": []
+    },
+    {
+        "id": "visitor-orion-converter",
+        "type": "function",
+        "z": "visitor-counter-simulation",
+        "name": "Orionエンティティ変換",
+        "func": "// Orion Context Broker用のエンティティ形式に変換\nconst visitor = msg.payload;\n\n// SmartDataModelsのCrowdFlowObservedモデルに近い形式で変換\nmsg.payload = {\n    id: \"urn:ngsi-ld:CrowdFlowObserved:\" + visitor.id,\n    type: \"CrowdFlowObserved\",\n    dateObserved: {\n        type: \"Text\",\n        value: visitor.startTime + \"/\" + visitor.endTime,\n        metadata: {\n            description: {\n                type: \"Text\",\n                value: \"観測期間（ISO8601形式の開始時刻/終了時刻）\"\n            }\n        }\n    },\n    dateObservedFrom: {\n        type: \"DateTime\",\n        value: visitor.startTime,\n        metadata: {\n            description: {\n                type: \"Text\",\n                value: \"単位時間の開始時刻\"\n            }\n        }\n    },\n    dateObservedTo: {\n        type: \"DateTime\",\n        value: visitor.endTime,\n        metadata: {\n            description: {\n                type: \"Text\",\n                value: \"単位時間の終了時刻\"\n            }\n        }\n    },\n    peopleCountIn: {\n        type: \"Number\",\n        value: visitor.in,\n        metadata: {\n            description: {\n                type: \"Text\",\n                value: \"単位時間内に内側に向けて通過した人数\"\n            }\n        }\n    },\n    peopleCountOut: {\n        type: \"Number\",\n        value: visitor.out,\n        metadata: {\n            description: {\n                type: \"Text\",\n                value: \"単位時間内に外側に向けて通過した人数\"\n            }\n        }\n    },\n    peopleCount: {\n        type: \"Number\",\n        value: visitor.total,\n        metadata: {\n            description: {\n                type: \"Text\",\n                value: \"単位時間内のin/outの合計人数\"\n            }\n        }\n    },\n    peopleTurnback: {\n        type: \"Number\",\n        value: visitor.turnback,\n        metadata: {\n            description: {\n                type: \"Text\",\n                value: \"単位時間内に判定ラインを超えずに引き返した人の数\"\n            }\n        }\n    },\n    source: {\n        type: \"Text\",\n        value: \"https://github.com/kzkski/fi-red-sim\"\n    },\n    dataProvider: {\n        type: \"Text\",\n        value: \"FIWARE-RED-SIM\"\n    },\n    location: {\n        type: \"geo:json\",\n        value: {\n            type: \"Point\",\n            coordinates: [139.7671, 35.6812] // 東京駅\n        },\n        metadata: {\n            description: {\n                type: \"Text\",\n                value: \"センサーの設置場所（東京駅）\"\n            }\n        }\n    }\n};\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 570,
+        "y": 440,
+        "wires": [
+            [
+                "visitor-orion-create"
+            ]
+        ]
+    },
+    {
+        "id": "visitor-orion-create",
+        "type": "http request",
+        "z": "visitor-counter-simulation",
+        "name": "Orion UPSERT",
+        "method": "POST",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "http://orion:1026/v2/entities?options=upsert",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "authType": "",
+        "senderr": true,
+        "headers": [
+            {
+                "keyType": "Content-Type",
+                "keyValue": "",
+                "valueType": "application/json",
+                "valueValue": ""
+            },
+            {
+                "keyType": "other",
+                "keyValue": "Fiware-Service",
+                "valueType": "other",
+                "valueValue": "openiot"
+            },
+            {
+                "keyType": "other",
+                "keyValue": "Fiware-ServicePath",
+                "valueType": "other",
+                "valueValue": "/"
+            }
+        ],
+        "x": 800,
+        "y": 440,
+        "wires": [
+            [
+                "visitor-orion-result"
+            ]
+        ]
+    },
+    {
+        "id": "visitor-orion-result",
+        "type": "debug",
+        "z": "visitor-counter-simulation",
+        "name": "Orion結果",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 980,
+        "y": 440,
+        "wires": []
+    }
+] 
