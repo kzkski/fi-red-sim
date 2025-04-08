@@ -7,6 +7,8 @@ FIWAREデバイスシミュレータ（Node-REDベース）
 このプロジェクトは、FIWAREエコシステムのためのデバイスシミュレータです。
 Node-REDを使用して、様々なIoTデバイスの動作をシミュレートし、FIWARE Orion Context Brokerと連携します。
 
+![気象センサーシミュレーションフロー](images/weather_simulation_flow.png)
+
 ## 主な機能
 
 - 複数のIoTデバイスのシミュレーション（温度センサー、気象センサー）
