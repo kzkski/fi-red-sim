@@ -1,9 +1,13 @@
-# Node-RED
+# Dependencies
 node_modules/
+package-lock.json
+
+# Node-RED specific
 .config.nodes.json
 .config.runtime.json
 .flows.json.backup
 flows_cred.json
+.sessions.json
 
 # Environment variables
 .env
@@ -12,80 +16,23 @@ flows_cred.json
 
 # Docker
 docker-compose.override.yml
+docker/data/
 
-# IDE
+# IDE and Editor
 .idea/
 .vscode/
+.cursor/
 *.swp
 *.swo
 
-# OS
+# OS generated
 .DS_Store
 Thumbs.db
 
-# Logs
+# Logs and debugging
 logs/
 *.log
 npm-debug.log*
 
-# Test coverage
+# Test and coverage
 coverage/
-
-# Temporary files
-tmp/
-temp/
-*.tmp
-*.temp
-
-# Build output
-dist/
-build/
-
-# MongoDB
-data/
-
-# Sessions
-.sessions.json
-
-# Sessions
-.config.json
-
-# Sessions
-.flows.json.backup
-
-# Sessions
-.sessions.json
-
-# Docker
-docker/data/
-
-# OS
-.DS_Store
-Thumbs.db
-
-# IDE
-.idea/
-.vscode/
-*.swp
-*.swo
-
-# Logs
-*.log
-npm-debug.log*
-
-/coverage/
-/site
-/report/
-/.c9revisions/
-/.settings/
-/rpm/BUILD/
-/rpm/BUILDROOT/
-/rpm/RPMS/
-/rpm/SRPMS/
-
-.settings
-.classpath
-.project
-.metadata
-package-lock.json
-.env
