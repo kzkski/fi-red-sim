@@ -1,6 +1,0 @@
-[
-  {
-    "content": "the-attribute-type",
-    "condition": "${{entity_name==the-.*-name}{name==the-.*-name}}"
-  }
-]

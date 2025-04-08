@@ -1,5 +1,78 @@
-/node_modules/
-/.idea/
+# Node-RED
+node_modules/
+.config.nodes.json
+.config.runtime.json
+.flows.json.backup
+flows_cred.json
+
+# Environment variables
+.env
+.env.*
+!.env.example
+
+# Docker
+docker-compose.override.yml
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+
+# Test coverage
+coverage/
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+*.temp
+
+# Build output
+dist/
+build/
+
+# MongoDB
+data/
+
+# Sessions
+.sessions.json
+
+# Sessions
+.config.json
+
+# Sessions
+.flows.json.backup
+
+# Sessions
+.sessions.json
+
+# Docker
+docker/data/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Logs
+*.log
+npm-debug.log*
+
 /coverage/
 /site
 /report/
@@ -15,5 +88,4 @@
 .project
 .metadata
 package-lock.json
-npm-debug.log
 .env

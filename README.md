@@ -1,30 +1,68 @@
-# FIWARE Device Simulator
+# Fi-Red-Sim
 
-[![License badge](https://img.shields.io/badge/license-AGPL-blue.svg)](https://opensource.org/licenses/AGPL-3.0)
-[![Documentation badge](https://readthedocs.org/projects/fiware-device-simulator/badge/?version=latest)](http://fiware-device-simulator.readthedocs.io/en/latest/)
-[![Docker badge](https://img.shields.io/docker/pulls/fiware/device-simulator.svg)](https://hub.docker.com/r/fiware/device-simulator/)
-[![Support badge]( https://img.shields.io/badge/support-sof-yellowgreen.svg)](http://stackoverflow.com/questions/tagged/fiware-device-simulator)
+FIWAREデバイスシミュレータ（Node-REDベース）
 
-The FIWARE Device Simulator is a tool which makes it possible to interact with the FIWARE ecosystem of components simulating devices and other elements which may communicate with FIWARE components.
+## 概要
 
-More concretely, the FIWARE Device Simulator includes the following capabilities:
+このプロジェクトは、FIWAREエコシステムのためのデバイスシミュレータです。Node-REDを使用して、様々なIoTデバイスの動作をシミュレートし、FIWARE Orion Context Brokerと連携します。
 
-1. Making update context requests to [Context Broker](https://github.com/telefonicaid/fiware-orion) instances via NGSI v1 and NGSI v2.
-2. Making notification requests to subscribers of context data managed by [Context Broker](https://github.com/telefonicaid/fiware-orion) instances (currently only NGSI v1 notifications are supported).
-3. Simulating devices supporting the UltraLight 2.0 and the JSON format via HTTP and MQTT interacting with [UltraLight](https://github.com/telefonicaid/iotagent-ul) and [JSON](https://github.com/telefonicaid/iotagent-json) IoT Agents.
-4. Automatic authorization and token management to interact with secured components and infrastructures.
-5. Possibility to run the simulations in real time and fast-forward modes.
-6. Possibility to visualize the evolution of the simulations in [Freeboard.io](http://freeboard.io/) dashboards.
+## 主な機能
 
-For further information please visit: the official [FIWARE Device Simulator documentation](https://fiware-device-simulator.readthedocs.io) at ReadTheDocs.
+- 複数のIoTデバイスのシミュレーション
+- リアルタイムデータ生成
+- FIWAREエンティティの自動作成と更新
+- 視覚的なフロー制御とモニタリング
 
-## Run it with docker compose
-* [Docker compose instructions](doc/manuals/run-with-docker.md)
+## 必要条件
 
-## Licence
+- Docker
+- Docker Compose
 
-The FIWARE Device Simulator is licensed under Affero General Public License (GPL) version 3.
+## セットアップ
 
-## Contact
+1. リポジトリのクローン：
+   ```bash
+   git clone [repository-url]
+   cd fi-red-sim
+   ```
 
-* Germán Toro del Valle ([german.torodelvalle@telefonica.com](mailto:german.torodelvalle@telefonica.com), [@gtorodelvalle](http://www.twitter.com/gtorodelvalle))
+2. 環境の起動：
+   ```bash
+   cd docker
+   docker-compose up -d
+   ```
+
+3. アクセス：
+   - Node-RED: http://localhost:1880
+   - Orion Context Broker: http://localhost:1026
+   
+   Node-REDの初期認証情報：
+   - ユーザー名: admin
+   - パスワード: password
+
+## 使用方法
+
+1. Node-REDインターフェースにアクセス
+2. 提供されているサンプルフローをインポート
+3. 必要に応じてフローをカスタマイズ
+4. デプロイしてシミュレーションを開始
+
+## ディレクトリ構造
+
+```
+fi-red-sim/
+├── docker/
+│   └── docker-compose.yml
+├── flows/
+│   └── flows.json
+└── config/
+    └── settings.js
+```
+
+## ライセンス
+
+MIT
+
+## 貢献
+
+プルリクエストやイシューの報告を歓迎します。

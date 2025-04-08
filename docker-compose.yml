@@ -18,14 +18,23 @@
 #
 # For those usages not covered by the GNU Affero General Public License
 # please contact with sc_support at telefonica dot com
-version: "3.9"
+
 services:
-  iot-device-simulator:
-    container_name: iot-device-simulator
-    hostname: iot-device-simulator
-    image: telefonicaiot/fiware-device-simulator:latest
-    command: sleep 10000000
-    logging:
-      driver: json-file
-      options:
-        max-size: "250m"
+  node-red:
+    build:
+      context: ./docker/node-red
+      dockerfile: Dockerfile
+    ports:
+      - "1880:1880"
+    environment:
+      - TZ=Asia/Tokyo
+    volumes:
+      - ./flows:/data
+      - ./config/node-red:/data/config
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:1880"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
