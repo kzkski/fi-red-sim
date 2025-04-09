@@ -11,10 +11,11 @@ Node-REDを使用して、様々なIoTデバイスの動作をシミュレート
 
 ## 主な機能
 
-- 複数のIoTデバイスのシミュレーション（温度センサー、気象センサー）
+- 複数のIoTデバイスのシミュレーション（温度センサー、気象センサー、ビジターカウンター）
 - リアルタイムデータ生成（ロジックは適当だけど）
 - FIWAREエンティティの自動作成と更新
 - NGSIv2形式でのデータモデリング（SmartDataModels準拠のつもり）
+- データ項目にメタデータ（概要説明）を追加
 
 ## 必要条件
 
@@ -46,6 +47,7 @@ Node-REDを使用して、様々なIoTデバイスの動作をシミュレート
 2. ライブラリから提供されているフローをインポート
    - 温度センサーシミュレーション
    - 気象センサーシミュレーション
+   - ビジターカウンターシミュレーション
 3. 必要に応じてフローをカスタマイズ
 4. デプロイしてシミュレーションを開始
 
@@ -63,6 +65,11 @@ curl -X GET http://localhost:1026/v2/entities \
 curl -X GET 'http://localhost:1026/v2/entities?type=WeatherObserved' \
      -H "Fiware-Service: openiot" \
      -H "Fiware-ServicePath: /"
+
+# ビジターカウンターデータの取得
+curl -X GET 'http://localhost:1026/v2/entities?type=CrowdFlowObserved' \
+     -H "Fiware-Service: openiot" \
+     -H "Fiware-ServicePath: /"
 ```
 
 ## ディレクトリ構造
@@ -74,10 +81,10 @@ fi-red-sim/
 │       └── Dockerfile       # Node-RED用Dockerイメージ定義
 ├── flows/
 │   ├── temperature.json     # 温度センサーシミュレーションフロー
-│   └── weather.json         # 気象センサーシミュレーションフロー
+│   ├── weather.json         # 気象センサーシミュレーションフロー
+│   └── visitor_counter.json # ビジターカウンターシミュレーションフロー
 ├── docker-compose.yml       # Docker Compose定義
-├── package.json             # プロジェクト情報・コマンド
-└── README.md                # このファイル
+└── package.json             # プロジェクト情報・コマンド
 ```
 
 ## ライセンス
